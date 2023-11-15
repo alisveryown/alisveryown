@@ -1,20 +1,29 @@
 (define (crossfit word1 word2)
-  (define (helper lst1 lst2 pos1)
-    (define (amend char lst2 pos1 pos2 pairs)
-      (define (loop lst2 pos2 pairs)
-        (cond
-          [(empty? lst2) pairs]
-          [else
-           (loop (cdr lst2) (add1 pos2)
-                 (if (char=? char (car lst2))
-                     (cons (list pos1 pos2) pairs)
-                     pairs))]))
-      (if (empty? lst1)
-          '()
-          (loop lst2 0 (amend (car lst1) (cdr lst2) pos1 0 '()) 
-                (helper (cdr lst1) lst2 (add1 pos1)))))
-
-  (helper (string->list word1) (string->list word2) 0))
+  (define (crossfit-helper lst1 lst2 pos1)
+    (crossfit-append (crossfit-helper-aux lst1 lst2 pos1) '()))
+  
+  (define (crossfit-helper-aux lst1 lst2 pos1)
+    (cond
+      [(pair? lst1) 
+       (crossfit-helper-aux (cdr lst1) lst2 (add1 pos1))]
+      [else
+       (crossfit-helper-aux '() lst2 pos1)]))
+  
+  (define (crossfit-append lst acc)
+    (crossfit-append-aux lst acc))
+  
+  (define (crossfit-append-aux lst acc)
+    (if (pair? lst)
+        (crossfit-append-aux (cdr lst) (crossfit-append-helper (car lst) acc))
+        acc))
+  
+  (define (crossfit-append-helper pair acc)
+    (crossfit-append-helper-aux (car pair) (cadr pair) acc))
+  
+  (define (crossfit-append-helper-aux pos1 pos2 acc)
+    (cons (list pos1 pos2) acc))
+  
+  (crossfit-helper (string->list word1) (string->list word2) 0))
 
 ; Examples
 (display (crossfit "tomato" "camel")) ; Output: ((2 2) (3 1))
@@ -23,3 +32,4 @@
 (newline)
 (display (crossfit "foil" "paper")) ; Output: ()
 (newline)
+
