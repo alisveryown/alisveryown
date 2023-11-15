@@ -1,30 +1,24 @@
 (define (crossfit word1 word2)
-  (define (helper lst1 lst2 pos1 pos2)
+  (define (helper lst1 lst2 pos1)
     (cond
-      [(= (length lst1) pos1) '()]
-      [else
-       (append-helper (find-matches (list-ref lst1 pos1) lst2 pos2) 
-                      (helper lst1 lst2 (add1 pos1) pos2))]))
-
-  (define (find-matches char lst2 pos2)
+      ((= 0 (length lst1)) '())
+      (else
+       ((lambda (matches)
+          (if (null? (cdr matches))
+              (car matches)
+              (helper (cdr matches) lst2 pos1)))
+        (find-matches (car lst1) lst2 pos1 0)))))
+  
+  (define (find-matches char lst2 pos1 pos2)
     (cond
-      [(= (length lst2) pos2) '()]
-      [(equal? char (list-ref lst2 pos2))
+      ((= 0 (length lst2)) '())
+      ((char=? char (car lst2))
        (cons (list pos1 pos2)
-             (find-matches char lst2 (add1 pos2)))]
-      [else
-       (find-matches char lst2 (add1 pos2))]))
-
-  (define (append-helper matches rest)
-    (append-helper-aux matches rest '()))
-
-  (define (append-helper-aux matches rest acc)
-    (cond
-      [(= (length matches) 0) acc]
-      [else
-       (append-helper-aux (cdr matches) rest (append (car matches) acc))]))
-
-  (helper (string->list word1) (string->list word2) 0 0))
+             (find-matches char (cdr lst2) pos1 (add1 pos2))))
+      (else
+       (find-matches char (cdr lst2) pos1 (add1 pos2)))))
+  
+  (helper (string->list word1) (string->list word2) 0))
 
 ; Examples
 (display (crossfit "tomato" "camel")) ; Output: ((2 2) (3 1))
