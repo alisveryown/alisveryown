@@ -3,8 +3,8 @@
     (cond
       [(= (length lst1) pos1) '()] ; base case: end of word1
       [else
-       ((append-matches (find-matches (list-ref lst1 pos1) lst2 pos2) 
-                        (helper lst1 lst2 (add1 pos1) pos2)))])) ; recursive case
+       (append-matches (find-matches (list-ref lst1 pos1) lst2 pos2)
+                       (helper lst1 lst2 (add1 pos1) pos2))])) ; recursive case
 
   (define (find-matches char lst2 pos2)
     (cond
@@ -16,11 +16,11 @@
        (find-matches char lst2 (add1 pos2))]))
 
   (define (append-matches matches rest)
-    ((append-helper matches rest)))
+    (append-helper matches rest))
 
   (define (append-helper matches rest)
     (if (= (length matches) 0)
-        (rest)
+        rest
         (cons (car matches) (append-matches (cdr matches) rest))))
 
   (helper (string->list word1) (string->list word2) 0 0))
