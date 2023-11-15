@@ -1,23 +1,15 @@
 (define (crossfit word1 word2)
   (define (helper lst1 lst2 pos1)
-    (cond
-      ((= 0 (length lst1)) '())
-      (else
-       ((lambda (matches)
-          (if (null? (cdr matches))
-              (car matches)
-              (helper (cdr matches) lst2 pos1)))
-        (find-matches (car lst1) lst2 pos1 0)))))
-  
-  (define (find-matches char lst2 pos1 pos2)
-    (cond
-      ((= 0 (length lst2)) '())
-      ((char=? char (car lst2))
-       (cons (list pos1 pos2)
-             (find-matches char (cdr lst2) pos1 (add1 pos2))))
-      (else
-       (find-matches char (cdr lst2) pos1 (add1 pos2)))))
-  
+    (cond [(= (length lst1) 0) '()]
+          [else (crossfit-iter lst1 lst2 pos1 0)]))
+
+  (define (crossfit-iter lst1 lst2 pos1 pos2)
+    (cond [(= (length lst2) 0) '()]
+          [(= (car lst1) (car lst2))
+           (cons (list pos1 pos2)
+                 (crossfit-iter (cdr lst1) (cdr lst2) (add1 pos1) (add1 pos2)))]
+          [else (crossfit-iter lst1 (cdr lst2) pos1 (add1 pos2))]))
+
   (helper (string->list word1) (string->list word2) 0))
 
 ; Examples
