@@ -1,21 +1,17 @@
 (define (crossfit word1 word2)
   (define (helper lst1 lst2 pos1 pos2)
-    (cond
-      [(null? lst1) '()] ; base case: first word is empty
-      [else
-       (append (find-matches (car lst1) lst2 pos1 pos2) 
-               (helper (cdr lst1) lst2 (add1 pos1) 0))])) ; recursive case
+    (if (empty? lst1) '()
+        (append (find-matches (car lst1) lst2 pos1 pos2)
+                (helper (cdr lst1) lst2 (add1 pos1) 0))))
 
   (define (find-matches char lst2 pos1 pos2)
-    (cond
-      [(null? lst2) '()] ; base case: second word is empty
-      [(char=? char (car lst2))
-       (cons (list pos1 pos2)
-             (find-matches char (cdr lst2) pos1 (add1 pos2)))]
-      [else
-       (find-matches char (cdr lst2) pos1 (add1 pos2))]))
+    (if (empty? lst2) '()
+        (if (= (string-ref word2 pos2) char)
+            (cons (list pos1 pos2)
+                  (find-matches char lst2 pos1 (add1 pos2)))
+            (find-matches char lst2 pos1 (add1 pos2)))))
 
-  (helper (string->list word1) (string->list word2) 0 0))
+  (helper word1 word2 0 0))
 
 ; Examples
 (display (crossfit "tomato" "camel")) ; Output: ((2 2) (3 1))
